@@ -6,13 +6,23 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const URL = "http://localhost:3001/posts"; // json-server db.json --port 3001
 
 function Post(props) {
-const post = props.post;
-// const { post } = props; // Same thing, fewer characters
+  const post = props.post;
+  // const { post } = props; // Same thing, fewer characters
+  const handleDelete = (e)=>{
+    // Fetch -> URL + ID + DELETE
+    // json-server -> HTTP DELETE: http://local/posts/3
+    fetch( URL + "/" + post.id, { method: "DELETE" })
+    .then( res => res.json() )
+    .then( data => {
+      console.log( data );
+    });
+
+  } 
   return (
     <div className="card text-white bg-info mb-3" style={{ maxWidth: "18rem" }}>
       <div className="card-header">
         {post.author}
-        <button className="btn btn-danger btn-sm float-right">DELETE</button>
+        <button onClick={handleDelete} className="btn btn-danger btn-sm float-right">DELETE</button>
       </div>
       <div className="card-body">
         <h5 className="card-title">{post.title}</h5>
