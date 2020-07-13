@@ -5,15 +5,15 @@ import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 const URL = "http://localhost:3001/posts"; // json-server db.json --port 3001
 
-function Post() {
+function Post(props) {
+const post =props.post
   return (
     <div className="card text-white bg-info mb-3" style={{ maxWidth: "18rem" }}>
-      <div className="card-header">Header</div>
+      <div className="card-header">{post.author}</div>
       <div className="card-body">
-        <h5 className="card-title">Light card title</h5>
+        <h5 className="card-title">{post.title}</h5>
         <p className="card-text">
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
+          {post.content}
         </p>
       </div>
     </div>
@@ -35,7 +35,7 @@ function App() {
     <>
       {posts.map(post => {
         // post.id, post.title, post.author, post.content
-        return <Post key={post.id}>{post.title}</Post>;
+        return <Post key={post.id} post={post}></Post>;
       })}
     </>
   );
