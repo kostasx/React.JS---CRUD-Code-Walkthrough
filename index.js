@@ -1,6 +1,6 @@
 // Rename to index.js
 // Run json-server db.json --port 3001
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 const URL = "http://localhost:3001/posts"; // json-server db.json --port 3001
@@ -11,6 +11,10 @@ function Post(props) {
   const handleDelete = e => {
     props.del(post.id);
   };
+  const handleEdit = e => {
+    // DATA === post
+    props.update( post );
+  }
   return (
     <div className="card text-white bg-info mb-3" style={{ maxWidth: "18rem" }}>
       <div className="card-header">
@@ -21,6 +25,7 @@ function Post(props) {
         >
           DELETE
         </button>
+        <button onClick={handleEdit} className="btn btn-warning btn-sm mr-2 float-right">Edit</button>
       </div>
       <div className="card-body">
         <h5 className="card-title">{post.title}</h5>
@@ -32,6 +37,7 @@ function Post(props) {
 
 function App() {
   const [posts, setPosts] = useState([]);
+  const formEl = useRef();
   useEffect(() => {
     fetch(URL)
       .then(res => res.json())
@@ -54,6 +60,8 @@ function App() {
   };
   const handleSubmit = (e)=>{
     e.preventDefault();
+    e.persist();
+    // TODO: Add form field validation, empty strings, etc.
     const postData = {
       title: e.target.title.value,
       author: e.target.author.value,
@@ -66,11 +74,28 @@ function App() {
       body: JSON.stringify( postData )
     })
     .then( res => res.json() )
-    .then( data => console.log(data) );
+    .then( data => {
+      e.target.reset();
+      console.log(data); 
+      // NEW POST + [ OLD POSTS ] === posts
+      setPosts([ ...posts, data ]);
+     // Fetch -> GET -> data -> setPosts(data) 
+     // fetch(URL)-> then -> setPosts(data)
+    })
+  }
+  const updatePost = ( post )=>{
+    // We need ID, Post Data
+    console.log("updatePost()", post, formEl.current );
+    formEl.current.title.value = post.title;
+    formEl.current.author.value = post.author;
+    formEl.current.content.value = post.content;
+    // Fetch( URL/ID ) -> HTTP PUT -> DATA
+    // Update state (setPosts) in order to re-render the list
+
   }
   return (
     <>
-      <form onSubmit={handleSubmit} className="p-3">
+      <form ref={formEl} onSubmit={handleSubmit} className="p-3">
         <div className="form-group">
           <label htmlFor="exampleFormControlInput1">Title</label>
           <input
@@ -103,7 +128,7 @@ function App() {
       </form>
       {posts.map(post => {
         // post.id, post.title, post.author, post.content
-        return <Post key={post.id} post={post} del={removePost} />;
+        return <Post key={post.id} post={post} del={removePost} update={updatePost} />;
       })}
     </>
   );
