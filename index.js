@@ -83,6 +83,7 @@ function App() {
      // fetch(URL)-> then -> setPosts(data)
     })
   }
+  // TODO: Submit button name must change to Submit/Update according to the action
   const updatePost = ( post )=>{
     // We need ID, Post Data
     console.log("updatePost()", post, formEl.current );
