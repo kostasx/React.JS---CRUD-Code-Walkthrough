@@ -52,15 +52,32 @@ function App() {
       })
       .catch(error => console.log(error));
   };
+  const handleSubmit = (e)=>{
+    e.preventDefault();
+    const postData = {
+      title: e.target.title.value,
+      author: e.target.author.value,
+      content: e.target.content.value
+    }
+    console.log( postData );
+    fetch( URL, {
+      method: "POST",
+      headers: { "Content-Type":"application/json"},
+      body: JSON.stringify( postData )
+    })
+    .then( res => res.json() )
+    .then( data => console.log(data) );
+  }
   return (
     <>
-      <form className="p-3">
+      <form onSubmit={handleSubmit} className="p-3">
         <div className="form-group">
           <label htmlFor="exampleFormControlInput1">Title</label>
           <input
             type="text"
             className="form-control"
             id="title"
+            name="title"
           />
         </div>
         <div className="form-group">
@@ -68,13 +85,14 @@ function App() {
           <input
             type="text"
             className="form-control"
-            id="author"
+            id="author" name="author"
           />
-        </div>        <div className="form-group">
+        </div>        
+        <div className="form-group">
           <label htmlFor="exampleFormControlTextarea1">Content</label>
           <textarea
             className="form-control"
-            id="content"
+            id="content" name="content"
             rows={3}
             defaultValue={""}
           />
