@@ -9,14 +9,7 @@ function Post(props) {
   const post = props.post;
   // const { post } = props; // Same thing, fewer characters
   const handleDelete = (e)=>{
-    // Fetch -> URL + ID + DELETE
-    // json-server -> HTTP DELETE: http://local/posts/3
-    fetch( URL + "/" + post.id, { method: "DELETE" })
-    .then( res => res.json() )
-    .then( data => {
-      console.log( data );
-    });
-
+    props.del( post.id );
   } 
   return (
     <div className="card text-white bg-info mb-3" style={{ maxWidth: "18rem" }}>
@@ -45,11 +38,21 @@ function App() {
       });
   }, []); // <- [] means that the useEffect callback will be executed just once
 
+  const removePost = ( id )=>{
+    // Fetch -> URL + ID + DELETE
+    // json-server -> HTTP DELETE: http://local/posts/3
+    fetch( URL + "/" + id, { method: "DELETE" })
+    .then( res => res.json() )
+    .then( () => {
+      const updatedPosts = posts.filter( post => post.id !== id );
+      setPosts( updatedPosts );
+    }).catch( error => console.log(error) );
+  }
   return (
     <>
       {posts.map(post => {
         // post.id, post.title, post.author, post.content
-        return <Post key={post.id} post={post}></Post>;
+        return <Post key={post.id} post={post} del={removePost}></Post>;
       })}
     </>
   );
