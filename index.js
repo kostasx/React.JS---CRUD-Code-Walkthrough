@@ -14,12 +14,11 @@ function App(){
       console.log(data);
       setPosts(data);
     })
-    
   }, []); // <- [] means that the useEffect callback will be executed just once 
 
   return (
     <>
-      App
+      {posts.map((post)=>{ return <div key ={post.id}> {post.title}</div>} )}
     </>
   )
 }
