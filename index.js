@@ -34,6 +34,7 @@ function App() {
   return (
     <>
       {posts.map(post => {
+        // post.id, post.title, post.author, post.content
         return <Post key={post.id}>{post.title}</Post>;
       })}
     </>
